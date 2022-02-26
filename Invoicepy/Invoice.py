@@ -20,19 +20,21 @@ class Invoice():
         self.address=address
         self.checkout_amount=0
         self.cartItems = cart
+        
         for item in cart:
             self.checkout_amount += item.amount
-        
-        for cartItem in self.cartItems:
-            cartItem.print()
+
+        self.checkout_amount = round(self.checkout_amount, 2)
+    
     
     def print(self):
-        print("INVOICE")
-        print("Order Number : ", self.order_id)
+        print("INVOICE\n")
+        print("Order Number: ", self.order_id, '\n')
 
         print("Checkout items: ")
         for cartItem in self.cartItems:
             cartItem.printVerbose()
+            print()
         
-        print("Final amount: ", self.checkout_amount)
-        print(50*'_')
+        print("Final amount: ₹", self.checkout_amount)
+        print(100*'_')

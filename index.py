@@ -6,54 +6,66 @@ import time
 
 load_dotenv()
 
-USER, PASSWORD = os.getenv('USER'), os.getenv('PASSWORD')
+USER, PASSWORD, HOST, AUTHPLUGIN = os.getenv('USER'), os.getenv('PASSWORD'), os.getenv('HOST'), os.getenv('AUTHPLUGIN')
+CATALOGDB, ORDERSDB =  os.getenv('CATALOGDB'),  os.getenv('ORDERSDB'),
 
-DB = mysql.connector.connect(user=USER, password=PASSWORD,
-    host='127.0.0.1', database='catalog', auth_plugin='mysql_native_password')
+catalogDB = mysql.connector.connect(user=USER, password=PASSWORD, host=HOST, database=CATALOGDB, auth_plugin=AUTHPLUGIN)
+catalogCursor = catalogDB.cursor()
 
-cursor = DB.cursor()
+orderdsDB = mysql.connector.connect(user=USER, password=PASSWORD, host=HOST, database=ORDERSDB, auth_plugin=AUTHPLUGIN)
+ordersCursor = orderdsDB.cursor()
+
+os.system('clear')
 
 cart = []
 
 while(True):
-    # os.system('clear')
+    os.system('clear')
     menuChoice = input(
         '1. Browse Catalog \n'
         '2. Check Cart\n'
         '3. Checkout\n'
+        '9. Exit\n\n'
         '~> '
     )
 
-    if(menuChoice=='1'):
+    if(menuChoice=='9'):
+        exit()
+    elif(menuChoice=='1'):
         while(True):
-            utils.printCatalog(cursor)
+            os.system('clear')
+            utils.printCatalog(catalogCursor, CATALOGDB)
         
             catalogChoice = input(
                 '• To add item to cart, type \'Add <item_id>\' \n'
                 '• To delete item from cart, type \'Delete <item_id>\' \n'
                 '• To checkout, type \'Checkout\'\n'
-                '• To return to main menu, type \'Return\'\n'
+                '• To return to main menu, type \'Return\'\n\n'
                 '~> '
             ).split(' ')
 
             if(catalogChoice[0].lower()=='add'):
-                add_status = utils.addToCart(catalogChoice[1], cart, cursor)
+                add_status = utils.addToCart(catalogChoice[1], cart, catalogCursor, CATALOGDB)
+
                 if(add_status==0):
                     print("Added to the cart")
                 else:
                     print("Item not found in the catalog. Please check the item number")
+                
                 time.sleep(2)
             
             elif(catalogChoice[0].lower()=='delete'):
-                delete_status = utils.deleteFromCart(int(catalogChoice[1]), cart)
+                delete_status = utils.deleteFromCart(int(catalogChoice[1]), cart, CATALOGDB)
+
                 if delete_status == 0:
                     print("Deleted")
                 else:
                     print("Item not found in cart")
+                
                 time.sleep(2)
         
             elif(catalogChoice[0].lower()=='checkout'):
-                utils.checkout(cart)
+                utils.checkout(cart, ordersCursor, ORDERSDB)
                 break
         
             elif(catalogChoice[0].lower()=='return'):
@@ -63,7 +75,7 @@ while(True):
                 os.system('clear')
         
             else:
-                print("Invalid choice. Please choose from the options above1. \n")
+                print("Invalid choice. Please choose from the options above. \n")
                 time.sleep(2)
         
 
@@ -76,7 +88,7 @@ while(True):
         time.sleep(2)
 
     elif(menuChoice=='3'):
-            utils.checkout(cart)
+            utils.checkout(cart, ordersCursor, ORDERSDB)
             break
     
     else:

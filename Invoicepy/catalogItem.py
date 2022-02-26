@@ -20,17 +20,17 @@ class catalogItem():
         self.discount=params[3]
         self.category=params[4]
         self.tax_rate=params[6]
-        self.amount = (self.price * (1-(self.discount/100))) * (1+(self.tax_rate)/100)
+        self.amount = round((self.price * (1-(self.discount/100))) * (1+(self.tax_rate)/100), 2)
     
     def print(self):
-        print('•', self.item_id, self.name, ', price: ₹', self.price, ', discount: ', self.discount, '%')
+        print('‣', self.item_id, self.name, ', price: ₹', self.price, ', discount: ', self.discount, '%')
         print()
 
     def printVerbose(self):
-        print('•', self.name)
+        print('‣', self.name)
         print('price: ₹', self.price, ',',
         ' discount: ', self.discount, '%,',
         ' tax rate: ', self.tax_rate, '%,',
-        ' amount: ', self.amount, '%',
+        ' amount: ₹', self.amount
         )
     

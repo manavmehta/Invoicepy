@@ -1,19 +1,19 @@
 import Invoicepy as ip
 import os
 
-def printCatalog(cursor):
-    cursor.execute("select * from catalog left join tax_rates on catalog.category = tax_rates.category;")
+def printCatalog(cursor, DB):
+    cursor.execute("select * from " + DB + " left join tax_rates on catalog.category = tax_rates.category;")
     for item in cursor:
         ci = ip.catalogItem(item)
         ci.print()
 
-def printCart(cursor):
+def printCart(cursor, DB):
     cursor.execute("select * from catalog left join tax_rates on catalog.category = tax_rates.category;")
     for item in cursor:
         cartItem = ip.catalogItem(item)
         cartItem.print()
 
-def addToCart(item_id, cart, cursor):
+def addToCart(item_id, cart, cursor, DB):
     cursor.execute("select * from catalog left join tax_rates on catalog.category = tax_rates.category where id=" + item_id + ';')
     found=0
     
@@ -45,7 +45,16 @@ def deleteFromCart(item_id, cart):
     else:
         return 1
 
-def checkout(cart, customer_id=1, customer_address='dummy'):
+def checkout(cart, cursor, DB, customer_id=1, customer_address='dummy'):
     invoice = ip.Invoice(cart, customer_id, customer_address)
     os.system('clear')
     invoice.print()
+
+    cursor.execute("insert into " + DB +
+            " values(" +
+            str(invoice.order_id) + ", " + 
+            str(invoice.customer_id) + ", " +
+            str(invoice.checkout_amount) + ", \"" + 
+            invoice.address+"\");")
+
+    exit()
