@@ -29,7 +29,7 @@ def addToCart(item_id, cart, cursor, DB):
         return 1
         # can be further used for other error codes
 
-def deleteFromCart(item_id, cart):
+def deleteFromCart(item_id, cart,):
     found=0
     index=0
     for item in cart:

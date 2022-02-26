@@ -55,7 +55,7 @@ while(True):
                 time.sleep(2)
             
             elif(catalogChoice[0].lower()=='delete'):
-                delete_status = utils.deleteFromCart(int(catalogChoice[1]), cart, CATALOGDB)
+                delete_status = utils.deleteFromCart(int(catalogChoice[1]), cart)
 
                 if delete_status == 0:
                     print("Deleted")
