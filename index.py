@@ -17,6 +17,11 @@ ordersCursor = orderdsDB.cursor()
 
 os.system('clear')
 
+print(utils.helloMessage)
+time.sleep(1)
+
+os.system('clear')
+
 cart = []
 
 while(True):
@@ -65,7 +70,7 @@ while(True):
                 time.sleep(2)
         
             elif(catalogChoice[0].lower()=='checkout'):
-                utils.checkout(cart, ordersCursor, ORDERSDB)
+                utils.checkout(cart, ordersCursor, orderdsDB, ORDERSDB)
                 break
         
             elif(catalogChoice[0].lower()=='return'):
@@ -88,7 +93,7 @@ while(True):
         time.sleep(2)
 
     elif(menuChoice=='3'):
-            utils.checkout(cart, ordersCursor, ORDERSDB)
+            utils.checkout(cart, ordersCursor, orderdsDB, ORDERSDB)
             break
     
     else:

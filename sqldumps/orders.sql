@@ -27,6 +27,7 @@ CREATE TABLE `orders` (
   `customer_id` int NOT NULL,
   `checkout_amount` int NOT NULL,
   `address` varchar(255) DEFAULT NULL,
+  `timestamp` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -37,7 +38,7 @@ CREATE TABLE `orders` (
 
 LOCK TABLES `orders` WRITE;
 /*!40000 ALTER TABLE `orders` DISABLE KEYS */;
-INSERT INTO `orders` VALUES (82731,1,198,'dummy');
+INSERT INTO `orders` VALUES (32909,1,1075,'dummy','2022-02-27 19:59:56.284842'),(51323,1,113281,'dummy','2022-02-27 20:01:26.957912'),(60672,1,183,'dummy','2022-02-27 20:00:52.925412'),(89864,1,381,'dummy','2022-02-27 19:52:26.827395');
 /*!40000 ALTER TABLE `orders` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -50,4 +51,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-02-26 20:59:29
+-- Dump completed on 2022-02-27 20:05:05
