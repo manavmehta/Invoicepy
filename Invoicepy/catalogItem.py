@@ -45,4 +45,3 @@ class catalogItem():
         ' tax rate: ', self.tax_rate, '%,',
         ' amount: ₹', self.amount
         )
-    

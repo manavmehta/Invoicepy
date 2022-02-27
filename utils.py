@@ -1,34 +1,42 @@
 import Invoicepy as ip
 import os
+import loggerUtil
+
+logger = loggerUtil.getLogger()
+
 
 def printCatalog(cursor, DB):
     '''
-        helper function responsible to print the catalog available
+        Prints the catalog available
     '''
 
-    cursor.execute("select * from " + DB + " left join tax_rates on catalog.category = tax_rates.category;")
+    try:
+        cursor.execute("select * from " + DB + " left join tax_rates on catalog.category = tax_rates.category;")
+        logger.debug("Catalog printed successfully")
+    except:
+        logger.error("Print catalog execution failed")
+
     for item in cursor:
         ci = ip.catalogItem(item)
         ci.print()
 
-def printCart(cursor, DB):
-    '''
-        helper function responsible to print the cart of the user
-    '''
-
-    cursor.execute("select * from catalog left join tax_rates on catalog.category = tax_rates.category;")
-    for item in cursor:
-        cartItem = ip.catalogItem(item)
-        cartItem.print()
 
 def addToCart(item_id, cart, cursor, DB):
     '''
-        helper function responsible to add an item into the cart
-        accepts, item_id from the user,
+        Adds the item corresponding to item_id into the cart.
+        Accepts, item_id from the user,
         searches the mysql DB, if found, adds to cart.
+
+        Return value:
+            0 -> operation successful
+            Other value -> operation failed
     '''
 
-    cursor.execute("select * from catalog left join tax_rates on catalog.category = tax_rates.category where id=" + item_id + ';')
+    try:
+        cursor.execute("select * from catalog left join tax_rates on catalog.category = tax_rates.category where id=" + item_id + ';')
+        logger.debug("successful addToCart DB execution with item_id=%s", item_id)
+    except:
+        logger.error("unsuccessful addToCart DB execution with item_id=%s", item_id)
     found=0
     
     for item in cursor:
@@ -43,11 +51,16 @@ def addToCart(item_id, cart, cursor, DB):
         return 1
         # can be further used for other error codes
 
+
 def deleteFromCart(item_id, cart):
     '''
-        helper function responsible to delete an item from the cart
-        accepts, item_id from the user,
-        searches the cart, if found, adds to cart.
+        Deletes the item corresponding to item_id from the cart.
+        Accepts, item_id from the user,
+        searches the cart, if found, performs deletion.
+
+        Return value:
+            0 -> operation successful
+            Other value -> operation failed
     '''
 
     found=0
@@ -62,29 +75,38 @@ def deleteFromCart(item_id, cart):
     if found:
         cart.pop(index)
         return 0
+
     else:
         return 1
 
+
 def checkout(cart, cursor, DB, dbName, customer_id=1, customer_address='dummy'):
     '''
-        helper function responsible to make a checkout operation
-        using the cart. Generates invoice item, commits transaction
-        into ORDERSDB
+        Executes a checkout operation using the cart.
+        Generates invoice item, commits transaction
+        into ORDERSDB.
+        cart must be a list of catalogItems.
     '''
 
-    invoice = ip.Invoice(cart, customer_id, customer_address)
-    os.system('clear')
-    invoice.print()
+    try:
+        invoice = ip.Invoice(cart, customer_id, customer_address)
+        os.system('clear')
+        invoice.print()
 
-    cursor.execute("insert into " + dbName +
-            " values(" +
-            str(invoice.order_id) + ", " + 
-            str(invoice.customer_id) + ", " +
-            str(invoice.checkout_amount) + ", \"" + 
-            invoice.address+ "\", \"" + 
-            invoice.timestamp + "\");")
-    DB.commit()
-    exit()
+        cursor.execute("insert into " + dbName +
+                " values(" +
+                str(invoice.order_id) + ", " + 
+                str(invoice.customer_id) + ", " +
+                str(invoice.checkout_amount) + ", \"" + 
+                invoice.address+ "\", \"" + 
+                invoice.timestamp + "\");")
+        DB.commit()
+        logger.debug("Checkout successful")
     
+    except:
+        logger.log("Checkout Failed!")
+    
+    exit()
+
 
 helloMessage = "Hello user\nWelcome to ShopPy powered by InvoicePy :)\n"
